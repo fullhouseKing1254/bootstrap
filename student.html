@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/bootstrap.js"></script>
+</head>
+<body>
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom"> 
+        <h2>📚 ตรวจการบ้าน</h2> 
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0"> 
+    
+    </ul> 
+    <div class="col-md-3 text-end"> 
+    </div> 
+    </header>
+    <!-- Container -->
+    <div class="container mt-4">
+        <h2 class="mb-3">การบ้านของฉัน</h2>
+        <div class="mb-3">
+            <label for="role" class="form-label">วิชา</label>
+            <select class="form-control" name="role" required>
+              <option value="student">คณิตศาสตร์</option>
+              <option value="teacher">วิทยาศาสตร์</option>
+            </select>
+          </div>
+          <div class="modal-header">
+            <h5 class="modal-title" id="uploadModalLabel">ส่งการบ้าน</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="uploadForm" action="upload.php" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="homeworkFile" class="form-label">เลือกไฟล์การบ้าน</label>
+                    <input class="form-control" type="file" name="homeworkFile" id="homeworkFile" required>
+                </div>
+                <button type="submit" class="btn btn-primary">อัปโหลด</button>
+            </form>
+            <p id="uploadStatus" class="mt-3"></p>
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="uploadToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ✅ อัปโหลดเสร็จสิ้น
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                document.getElementById("uploadForm").addEventListener("submit", function(event) {
+                    event.preventDefault(); // ป้องกันการโหลดหน้าใหม่
+                
+                    let formData = new FormData(this);
+                    let uploadStatus = document.getElementById("uploadStatus");
+                
+                    fetch("upload.php", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(result => {
+                        if (result.trim() === "อัปโหลดเสร็จสิ้น") {
+                            uploadStatus.innerHTML = ""; // ซ่อนข้อความปกติ
+                            let toast = new bootstrap.Toast(document.getElementById("uploadToast"));
+                            toast.show(); // แสดง Toast แจ้งเตือน
+                        } else {
+                            uploadStatus.innerHTML = `<span class='text-danger'>❌ ${result}</span>`;
+                        }
+                    })
+                    .catch(error => {
+                        uploadStatus.innerHTML = `<span class='text-danger'>❌ อัปโหลดล้มเหลว: ${error}</span>`;
+                    });
+                });
+                </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+
+    
+    
+</body>
+</html>
